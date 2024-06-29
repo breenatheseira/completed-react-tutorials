@@ -75,7 +75,7 @@ const ColorFilters = ({ value: colors, onChange }) => {
 const Footer = () => {
   const colors = []
   const status = StatusFilters.All
-  const todosRemaining = 0
+  const todosRemaining = 1
 
   const onColorChange = (color, changeType) =>
     console.log('Color change: ', { color, changeType })

@@ -1,5 +1,5 @@
 import React from 'react'
-import TimesSolid from './times-solid.svg'
+import timesSolid from './times-solid.svg'
 import { availableColors, capitalize } from '../filters/colors'
 
 const TodoListItem = ({ todo, onColorChange, onCompletedChange, onDelete }) => {
@@ -42,7 +42,7 @@ const TodoListItem = ({ todo, onColorChange, onCompletedChange, onDelete }) => {
             {colorOptions}
           </select>
           <button className="destroy" onClick={onDelete}>
-            <TimesSolid />
+            <img src={timesSolid}/>
           </button>
         </div>
       </div>
