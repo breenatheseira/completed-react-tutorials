@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from '../features/counter/counterSlice'
-import todosReducer from '../features/todo/todoSlice'
+import todosReducer from '../features/todos/todoSlice'
 import filtersReducer from '../features/filters/filtersSlice'
 
 export default configureStore({
@@ -8,5 +8,5 @@ export default configureStore({
     counter: counterReducer,
     todos: todosReducer,
     filters: filtersReducer,
-  },
+  }
 })
