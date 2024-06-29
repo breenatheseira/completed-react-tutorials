@@ -8,18 +8,22 @@ const selectTodoById = (state, todoId) => {
   return state.todos.find(todo => todo.id === todoId)
 }
 
-const TodoListItem = ({ id, onColorChange, onCompletedChange, onDelete }) => {
+const TodoListItem = ({ id }) => {
   const todo = useSelector(state => selectTodoById(state,id))
   const { text, completed, color } = todo
 
   const dispatch = useDispatch();
 
   const handleCompletedChanged = () => {
-    dispatch({ type: 'todos/todoToggled', payload: todo.id })
+    dispatch({ type: 'todos/todoToggled', payload: id })
   }
 
-  const handleColorChanged = (e) => {
-    onColorChange(e.target.value)
+  const handleColorChanged = () => {
+    dispatch({ type: 'todos/colorSelected', payload: { color, id } })
+  }
+
+  const handleDeleteClick = () => {
+    dispatch({ type: 'todos/todoDeleted', payload: id })
   }
 
   const colorOptions = availableColors.map((c) => (
@@ -50,7 +54,7 @@ const TodoListItem = ({ id, onColorChange, onCompletedChange, onDelete }) => {
             <option value=""></option>
             {colorOptions}
           </select>
-          <button className="destroy" onClick={onDelete}>
+          <button className="destroy" onClick={handleDeleteClick}>
             <img src={timesSolid}/>
           </button>
         </div>
