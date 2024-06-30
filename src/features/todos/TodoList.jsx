@@ -1,13 +1,13 @@
 import React from 'react'
-import { useSelector, shallowEqual } from 'react-redux'
+import { useSelector } from 'react-redux'
 import TodoListItem from './TodoListItem'
 
-const selectTodoIds = state => state.todos.map(todo => todo.id)
+import { selectFilteredTodoIds } from './todoSlice'
 
 const TodoList = () => {
-  // Alternatively
+  // don't do this, the map func always returns a reference, so the component will always re-render
   // const todoIds = useSelector(state => state.todos.map(todo => todo.id))
-  const todoIds = useSelector(selectTodoIds, shallowEqual)
+  const todoIds = useSelector(selectFilteredTodoIds)
 
   const renderedListItems = todoIds.map((todoId) => {
     return <TodoListItem key={todoId} id={todoId} />

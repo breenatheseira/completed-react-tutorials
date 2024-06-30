@@ -1,4 +1,8 @@
 import { client } from '../../utils/client'
+import { createSelector } from 'reselect'
+
+// Do not import todoSlice into filtersSlice; otherwise a cyclic import dependency will happen
+import { StatusFilters } from '../filters/filtersSlice'
 
 const initialState = []
 
@@ -53,9 +57,54 @@ export default function todosReducer(state = initialState, action) {
   }
 }
 
+export const selectTodos = state => state.todos
+export const selectTodoById = (state, todoId) => {
+  return selectTodos(state).find(todo => todo.id === todoId)
+}
+
+// Memoizing (caching) Selectors
+export const selectTodoIds = createSelector(
+  // Pass 1 or more input selector functions:
+  state => state.todos,
+  // then write output selector that receivers all input results as args 
+  //  & returns the final value
+  todos => todos.map(todo => todo.id)
+)
+
+const selectFilteredTodos = createSelector(
+  // 1st input selector: all todos
+  state => state.todos,
+  // 2nd input selector: current status filter
+  state => state.filters,
+  // output selector: receives both values
+  (todos, filters) => {
+    const { status, colors } = filters
+    const showAllCompletions = status === StatusFilters.All
+    if (showAllCompletions && colors.length === 0){
+      return todos
+    }
+
+    const completedStatus = status === StatusFilters.Completed
+    // Return either active/ completed todos based on filter
+    return todos.filter(todo => {
+      const statusMatches = 
+        showAllCompletions || todo.completed === completedStatus
+      const colorMatches = colors.length === 0 || colors.includes(todo.color)
+      return statusMatches && colorMatches
+    })
+  }
+)
+
+export const selectFilteredTodoIds = createSelector(
+  // Pass out other memoized selector as an input
+  selectFilteredTodos,
+  //  & derive data in the output selector
+  filteredTodos => filteredTodos.map(todo => todo.id)
+)
+
 // Action Creators
 export const todoToggled = todoId => ({ type: 'todos/todoToggled', payload: todoId })
-export const colorSelected = (color, todoId) => ({ type: 'todos/colorSelected', payload: { color, todoId } })
+export const todoColorChanged = (color, todoId) => ({ type: 'todos/colorSelected', payload: { color, todoId } })
 export const todoDeleted = todoId => ({ type: 'todos/todoDeleted', payload: todoId })
 
 export const allTodosCompleted = () => ({ type: 'todos/allCompleted' })
