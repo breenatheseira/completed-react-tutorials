@@ -41,3 +41,16 @@ const delayedMessageMiddleware = storeAPI = next = action => {
   }
   return next(action)
 }
+
+/* Thunk Middleware */ 
+
+const reduxThunkMiddleware = storeAPI => next => action => {
+  // If 'action' is actually a function...
+  if(typeof action === 'function'){
+    // call the function, pass 'dispatch' and 'getState' as args
+    // then return whatever the thunk function returns
+    return action(storeAPI.dispatch, storeAPI.getState)
+  }
+  // Otherwise, it's a normal action, send it onwards
+  return next(action)
+}
