@@ -1,23 +1,26 @@
 import { client } from '../../utils/client'
 import { createSelector } from '@reduxjs/toolkit'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { 
+  createSlice, 
+  createAsyncThunk,
+  createEntityAdapter 
+} from '@reduxjs/toolkit'
 
 // Do not import todoSlice into filtersSlice; otherwise a cyclic import dependency will happen
 import { StatusFilters } from '../filters/filtersSlice'
 
-const initialState = {
+// contains getInitialState which returns: { ids: [], entities: [] }
+//   & getSelectors (std set of selector functions)
+const todosAdapter = createEntityAdapter()
+
+const initialState = todosAdapter.getInitialState({
   status: 'idle', // or: 'loading', 'succeeded', 'failed'
-  entities: {}
-}
+})
 
 const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    todoAdded(state, action){
-      const todo = action.payload
-      state.entities[todo.id] = todo
-    },
     todoToggled(state, action){
       const todoId = action.payload
       const todo = state.entities[todoId]
@@ -37,31 +40,26 @@ const todosSlice = createSlice({
         }
       }
     },
-    todoDeleted(state, action){
-      delete state.entities[action.payload]
-    },
+    // with createEntityAdapter(), removes a todo by ID
+    todoDeleted: todosAdapter.removeOne,
+    // todoDeleted(state, action){
+    //   delete state.entities[action.payload]
+    // },
     allTodosCompleted(state, action){
       Object.values(state.entities).forEach((todo) => { 
         todo.completed = true
       })
     },
     allCompletedTodosCleared(state, action){
-      Object.values(state.entities).forEach((todo) => {
-        if(todo.completed){
-          delete state.entities[todo.id]
-        }
-      })
-    },
-    todosLoading(state, action){
-      state.loading = 'loading'
-    },
-    todosLoaded(state, action){
-      const newEntities = {}
-      action.payload.forEach((todo) => {
-        newEntities[todo.id] = todo
-      })
-      state.entities = newEntities
-      state.loading = 'idle'
+      const completedIds = Object.values(state.entities)
+        .filter(todo => todo.completed)
+        .map(todo => todo.id)
+      todosAdapter.removeMany(state, completedIds)
+      // Object.values(state.entities).forEach((todo) => {
+      //   if(todo.completed){
+      //     delete state.entities[todo.id]
+      //   }
+      // })
     },
   },
   extraReducers: builder => {
@@ -70,21 +68,14 @@ const todosSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
-        const newEntities = {}
-        action.payload.forEach((todo) => {
-          newEntities[todo.id] = todo
-        })
-        state.entities = newEntities
+        todosAdapter.setAll(state, action.payload)
         state.status = 'idle'
       })
-      // never really handled this in our todos
+      // never handled in the todo app
       .addCase(fetchTodos.rejected, (state, action) => {
         state.status = 'loading'
       })
-      .addCase(saveNewTodo.fulfilled, (state, action) => {
-        const todo = action.payload
-        state.entities[todo.id] = todo
-      })
+      .addCase(saveNewTodo.fulfilled, todosAdapter.addOne)
   }
 })
 
@@ -101,12 +92,15 @@ export const {
 
 export default todosSlice.reducer
 
+export const { selectAll: selectTodos, selectById: selectTodoById } 
+  = todosAdapter.getSelectors(state => state.todos)
+
 const selectTodosEntities = state => state.todos.entities
 
-export const selectTodos = createSelector(selectTodosEntities, entities => Object.values(entities))
-export const selectTodoById = (state, todoId) => {
-  return selectTodosEntities(state)[todoId]
-}
+// export const selectTodos = createSelector(selectTodosEntities, entities => Object.values(entities))
+// export const selectTodoById = (state, todoId) => {
+//   return selectTodosEntities(state)[todoId]
+// }
 
 // Memoizing (caching) Selectors
 export const selectTodoIds = createSelector(
