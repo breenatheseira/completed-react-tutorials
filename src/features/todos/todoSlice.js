@@ -53,18 +53,47 @@ export default function todosReducer(state = initialState, action) {
   }
 }
 
+// Action Creators
+export const todoToggled = todoId => ({ type: 'todos/todoToggled', payload: todoId })
+export const colorSelected = (color, todoId) => ({ type: 'todos/colorSelected', payload: { color, todoId } })
+export const todoDeleted = todoId => ({ type: 'todos/todoDeleted', payload: todoId })
+
+export const allTodosCompleted = () => ({ type: 'todos/allCompleted' })
+export const allCompletedTodosCleared = () => ({ type: 'todos/completedCleared' })
+
+export const todosLoaded = todos => {
+  return {
+    type: 'todos/todosLoaded',
+    payload: todos
+  }
+}
+
+export const todoAdded = todo => {
+  return {
+    type: 'todos/todoAdded',
+    payload: todo
+  }
+}
+// or
+// export const todoAdded = todo => ({ type: 'todo/todoAdded', payload: todo })
+
 // thunk functions
-export async function fetchTodos(dispatch, getState) {
+
+export const fetchTodos = () => async (dispatch, getState) => {
+// export function fetchTodos(){ // same syntax as above
+// return async function fetchTodosThunk(dispatch, getState) {
   const response = await client.get('/fakeApi/todos')
 
   const stateBefore = getState()
   console.log('todos before dispatch: ', stateBefore.todos.length)
 
-  dispatch({ type: 'todos/todosLoaded', payload: response.todos })
+  dispatch(todosLoaded(response.todos))
 
   const stateAfter = getState()
   console.log('todos after dispatch: ', stateAfter.todos.length)
 }
+
+// export const saveNewTodo = (text) => async (dispatch, getState) => { // another way
 
 // synchronous outer function receiving the 'text' params
 export function saveNewTodo(text){
@@ -73,6 +102,6 @@ export function saveNewTodo(text){
     // now use text value & send to the server
     const initialTodo = { text }
     const response = await client.post('/fakeApi/todos', { todo: initialTodo })
-    dispatch({ type: 'todos/todoAdded', payload: response.todo })
+    dispatch(todoAdded(response.todo))
   }
 }
