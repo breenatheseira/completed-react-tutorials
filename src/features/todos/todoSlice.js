@@ -1,6 +1,6 @@
 import { client } from '../../utils/client'
 import { createSelector } from '@reduxjs/toolkit'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // Do not import todoSlice into filtersSlice; otherwise a cyclic import dependency will happen
 import { StatusFilters } from '../filters/filtersSlice'
@@ -63,6 +63,28 @@ const todosSlice = createSlice({
       state.entities = newEntities
       state.loading = 'idle'
     },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        const newEntities = {}
+        action.payload.forEach((todo) => {
+          newEntities[todo.id] = todo
+        })
+        state.entities = newEntities
+        state.status = 'idle'
+      })
+      // never really handled this in our todos
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.status = 'loading'
+      })
+      .addCase(saveNewTodo.fulfilled, (state, action) => {
+        const todo = action.payload
+        state.entities[todo.id] = todo
+      })
   }
 })
 
@@ -257,23 +279,34 @@ export const selectFilteredTodoIds = createSelector(
 
 // thunk functions
 
-export const fetchTodos = () => async (dispatch, getState) => {
-// export function fetchTodos(){ // same syntax as above
-// return async function fetchTodosThunk(dispatch, getState) {
-  dispatch(todosLoading())
+export const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
   const response = await client.get('/fakeApi/todos')
-  dispatch(todosLoaded(response.todos))
-}
+  return response.todos
+})
+
+export const saveNewTodo = createAsyncThunk('todo/saveNewTodo', async (text) => {
+  const initialTodo = { text }
+  const response = await client.post('/fakeApi/todos', { todo: initialTodo })
+  return response.todo
+})
+
+// without reactjs toolkit
+// export const fetchTodos = () => async (dispatch, getState) => {
+// // export function fetchTodos(){ // same syntax as above
+// // return async function fetchTodosThunk(dispatch, getState) {
+//   dispatch(todosLoading())
+//   const response = await client.get('/fakeApi/todos')
+//   dispatch(todosLoaded(response.todos))
+// }
 
 // export const saveNewTodo = (text) => async (dispatch, getState) => { // another way
-
 // synchronous outer function receiving the 'text' params
-export function saveNewTodo(text){
-  // then creates an async thunk function
-  return async function saveNewTodoThunk(dispatch, getState){
-    // now use text value & send to the server
-    const initialTodo = { text }
-    const response = await client.post('/fakeApi/todos', { todo: initialTodo })
-    dispatch(todoAdded(response.todo))
-  }
-}
+// export function saveNewTodo(text){
+//   // then creates an async thunk function
+//   return async function saveNewTodoThunk(dispatch, getState){
+//     // now use text value & send to the server
+//     const initialTodo = { text }
+//     const response = await client.post('/fakeApi/todos', { todo: initialTodo })
+//     dispatch(todoAdded(response.todo))
+//   }
+// }
