@@ -4,16 +4,24 @@ import { createSelector } from 'reselect'
 // Do not import todoSlice into filtersSlice; otherwise a cyclic import dependency will happen
 import { StatusFilters } from '../filters/filtersSlice'
 
-const initialState = []
+const initialState = {
+  status: 'idle', // or: 'loading', 'succeeded', 'failed'
+  entities: []
+}
 
 export default function todosReducer(state = initialState, action) {
   switch (action.type) {
     case 'todos/todoAdded': {
       // Return a new todos state array with the new todo item at the end
-      return [...state, action.payload]
+      return {
+        ...state,
+        entities: [ ...state.entities, action.payload ]
+      }
     }
     case 'todos/todoToggled': {
-      return state.map((todo) => {
+      return {
+        ...state,
+        entities: state.entities.map((todo) => {
         if (todo.id !== action.payload) {
           return todo
         }
@@ -22,11 +30,13 @@ export default function todosReducer(state = initialState, action) {
           ...todo,
           completed: !todo.completed,
         }
-      })
+      })}
     }
     case 'todos/colorSelected': {
       const { color, todoId } = action.payload
-      return state.map((todo) => {
+      return {
+        ...state,
+        entities: state.entities.map((todo) => {
         if (todo.id !== todoId) {
           return todo
         }
@@ -35,29 +45,48 @@ export default function todosReducer(state = initialState, action) {
           ...todo,
           color,
         }
-      })
+      })}
     }
     case 'todos/todoDeleted': {
-      return state.filter((todo) => todo.id !== action.payload)
+      return {
+        ...state,
+        entities: state.entities.filter((todo) => todo.id !== action.payload)
+      }
     }
     case 'todos/allCompleted': {
-      return state.map((todo) => {
-        return { ...todo, completed: true }
-      })
+      return {
+        ...state,
+        entities: state.entities.map((todo) => {
+          return { ...todo, completed: true }
+        })
+      }
     }
     case 'todos/completedCleared': {
-      return state.filter((todo) => !todo.completed)
+      return {
+        ...state,
+        entities: state.entities.filter((todo) => !todo.completed)
+      }
+    }
+    case 'todos/todosLoading': {
+      return {
+        ...state,
+        status: 'loading'
+      }
     }
     case 'todos/todosLoaded': {
       // Replace existing state by returning the new value
-      return action.payload
+      return {
+        ...state,
+        status: 'idle',
+        entities: action.payload
+      }
     }
     default:
       return state
   }
 }
 
-export const selectTodos = state => state.todos
+export const selectTodos = state => state.todos.entities
 export const selectTodoById = (state, todoId) => {
   return selectTodos(state).find(todo => todo.id === todoId)
 }
@@ -65,15 +94,20 @@ export const selectTodoById = (state, todoId) => {
 // Memoizing (caching) Selectors
 export const selectTodoIds = createSelector(
   // Pass 1 or more input selector functions:
-  state => state.todos,
+  selectTodos,
   // then write output selector that receivers all input results as args 
   //  & returns the final value
   todos => todos.map(todo => todo.id)
 )
 
-const selectFilteredTodos = createSelector(
+export const incompleteTodos = createSelector(
+  selectTodos,
+  todos => todos.filter(todo => !todo.completed)
+)
+
+export const selectFilteredTodos = createSelector(
   // 1st input selector: all todos
-  state => state.todos,
+  selectTodos,
   // 2nd input selector: current status filter
   state => state.filters,
   // output selector: receives both values
@@ -109,7 +143,7 @@ export const todoDeleted = todoId => ({ type: 'todos/todoDeleted', payload: todo
 
 export const allTodosCompleted = () => ({ type: 'todos/allCompleted' })
 export const allCompletedTodosCleared = () => ({ type: 'todos/completedCleared' })
-
+export const todosLoading = () => ({ type: 'todos/todosLoading' })
 export const todosLoaded = todos => {
   return {
     type: 'todos/todosLoaded',
@@ -131,15 +165,9 @@ export const todoAdded = todo => {
 export const fetchTodos = () => async (dispatch, getState) => {
 // export function fetchTodos(){ // same syntax as above
 // return async function fetchTodosThunk(dispatch, getState) {
+  dispatch(todosLoading())
   const response = await client.get('/fakeApi/todos')
-
-  const stateBefore = getState()
-  console.log('todos before dispatch: ', stateBefore.todos.length)
-
   dispatch(todosLoaded(response.todos))
-
-  const stateAfter = getState()
-  console.log('todos after dispatch: ', stateAfter.todos.length)
 }
 
 // export const saveNewTodo = (text) => async (dispatch, getState) => { // another way
