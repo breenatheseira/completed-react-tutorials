@@ -1,12 +1,12 @@
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom"
-import { updateContact } from "../../../features/contacts/contacts"
+import { updateContact } from "./contacts"
 
 export async function action({ request, params }) {
   const formData = await request.formData()
   // Object.fromEntries: Map[ ['foo','bar'],['baz',42]] => Object { foo: "bar", baz: 42 }
   const updates = Object.fromEntries(formData)
   await updateContact(params.contactId, updates)
-  return redirect(`/contacts/${params.contactId}`)
+  return redirect(`/contacts-tutorial/contacts/${params.contactId}`)
 }
 
 export default function EditContact() {

@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom'
 import { useEffect } from 'react'
 import { getContacts, createContact } from '../../features/contacts/contacts.js'
+import '../../features/contacts/contacts.css'
 
 export async function loader({request}) {
   const url = new URL(request.url)
@@ -19,10 +20,10 @@ export async function loader({request}) {
 
 export async function action(){
   const contact = await createContact()
-  return redirect(`/contacts/${contact.id}/edit`)
+  return redirect(`/contacts-tutorial/contacts/${contact.id}/edit`)
 }
 
-export default function Root() {
+export default function ContactsRoot() {
   const { contacts, q } = useLoaderData()
   const navigation = useNavigation()
   const submit = useSubmit()

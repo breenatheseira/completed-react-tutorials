@@ -7,7 +7,9 @@ import './todo.css'
 const Todo = () => {
   return (
     <>
-      <h2>Todos</h2>
+      <div className="card">
+        <h2>Todos</h2>
+      </div>
       <div className="todoapp">
         <Header />
         <TodoList />
