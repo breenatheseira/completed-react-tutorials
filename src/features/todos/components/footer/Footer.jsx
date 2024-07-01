@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { availableColors, capitalize,  } from '../filters/colors'
-import { StatusFilters, colorFilterChanged, statusFilterChanged } from '../filters/filtersSlice'
-import { incompleteTodos, allTodosCompleted, allCompletedTodosCleared  } from '../todos/todoSlice'
+import { availableColors, capitalize,  } from '../../filters/colors'
+import { StatusFilters, colorFilterChanged, statusFilterChanged } from '../../filters/filtersSlice'
+import { incompleteTodos, allTodosCompleted, allCompletedTodosCleared  } from '../../todoSlice'
 
 const RemainingTodos = ({ count }) => {
   const suffix = count === 1 ? '' : 's'

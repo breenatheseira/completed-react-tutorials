@@ -1,8 +1,8 @@
 import React from 'react'
-import timesSolid from './times-solid.svg'
+import timesSolid from './assets/times-solid.svg'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { availableColors, capitalize } from '../filters/colors'
+import { availableColors, capitalize } from './filters/colors'
 import { selectTodoById, todoToggled, todoColorChanged, todoDeleted } from './todoSlice'
 
 const TodoListItem = ({ id }) => {

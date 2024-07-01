@@ -1,8 +1,8 @@
 import React from "react"
-import Header from "../header/Header"
+import Header from "./components/header/Header"
 import TodoList from "./TodoList"
-import Footer from "../footer/Footer"
-import './todo.css'
+import Footer from "./components/footer/Footer"
+import './assets/todo.css'
 
 const Todo = () => {
   return (

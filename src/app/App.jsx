@@ -2,7 +2,7 @@ import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 
 import store from '../stores/store.js'
 import { Provider } from 'react-redux'
-import '../utils/server.js'
+import '../features/todos/utils/server.js'
 
 import Counter from '../features/counter/Counter'
 import Todo from '../features/todos/Todo'

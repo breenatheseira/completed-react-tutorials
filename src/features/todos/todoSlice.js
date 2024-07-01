@@ -1,4 +1,4 @@
-import { client } from '../../utils/client'
+import { client } from './utils/client'
 import { createSelector } from '@reduxjs/toolkit'
 import { 
   createSlice, 
@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit'
 
 // Do not import todoSlice into filtersSlice; otherwise a cyclic import dependency will happen
-import { StatusFilters } from '../filters/filtersSlice'
+import { StatusFilters } from './filters/filtersSlice'
 
 // contains getInitialState which returns: { ids: [], entities: [] }
 //   & getSelectors (std set of selector functions)
