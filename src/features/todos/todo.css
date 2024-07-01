@@ -425,6 +425,7 @@ ul.todo-list {
 
 .todo-list li .destroy {
   width: 30px;
+  height: 30px;
   margin-right: 10px;
   font-size: 30px;
   line-height: 30px;
@@ -439,6 +440,11 @@ ul.todo-list {
 
 .todo-list li .destroy:hover {
   color: #af5b5e;
+}
+
+/* Font-Awesome base icon rules */
+.svg-inline--fa.fa-w-11 {
+  width: 0.6875em;
 }
 
 .footer {

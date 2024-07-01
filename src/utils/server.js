@@ -77,6 +77,8 @@ new Server({
       const result = server.create('todo', data)
       return result
     })
+    // Supposed to pass other unhandled routes... not working with latest RRD
+    this.passthrough();
   },
   models: {
     todo: Model.extend({}),
