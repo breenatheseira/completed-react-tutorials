@@ -5,6 +5,8 @@ import { availableColors, capitalize,  } from '../../filters/colors'
 import { StatusFilters, colorFilterChanged, statusFilterChanged } from '../../filters/filtersSlice'
 import { incompleteTodos, allTodosCompleted, allCompletedTodosCleared  } from '../../todoSlice'
 
+import '../../assets/footer.css'
+
 const RemainingTodos = ({ count }) => {
   const suffix = count === 1 ? '' : 's'
 

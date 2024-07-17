@@ -8,8 +8,9 @@ export default function Counter() {
   const dispatch = useDispatch()
 
   return (
-    <div>
+    <div id='counter-root'>
       <div>
+        <h1>Counter Example</h1>
         <button
           aria-label="Increment value"
           onClick={() => dispatch(increment())}

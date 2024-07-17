@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { saveNewTodo } from '../../todoSlice'
+import '../../assets/loader.css'
+import '../../assets/header.css'
 
 const Header = () => {
   const [text, setText] = useState('')

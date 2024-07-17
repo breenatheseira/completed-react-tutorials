@@ -77,7 +77,7 @@ function App() {
 
 function Home(){
   return (
-    <div>
+    <div id="homepage-root">
       <h1>Welcome to Tutorials Done</h1>
       <p>Click on the links below to explore the results of the tutorials:</p>
       <div>
@@ -101,7 +101,7 @@ function Home(){
 
 function NoMatch() {
   return (
-    <div>
+    <div id="homepage-root">
       <h2>Nothing to see here!</h2>
       <p>
         <Link to="/">Go to the home page</Link>

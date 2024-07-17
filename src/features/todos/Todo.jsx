@@ -6,7 +6,7 @@ import './assets/todo.css'
 
 const Todo = () => {
   return (
-    <>
+    <div id='todo-root'>
       <div className="card">
         <h2>Todos</h2>
       </div>
@@ -15,7 +15,7 @@ const Todo = () => {
         <TodoList />
         <Footer />
       </div>
-    </>
+    </div>
   )
 }
 

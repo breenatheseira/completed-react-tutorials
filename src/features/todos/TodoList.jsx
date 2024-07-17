@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import TodoListItem from './TodoListItem'
 
 import { selectFilteredTodoIds } from './todoSlice'
+import './assets/loader.css'
 
 const TodoList = () => {
   // don't do this, the map func always returns a reference, so the component will always re-render
