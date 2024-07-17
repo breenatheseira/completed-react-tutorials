@@ -20,51 +20,45 @@ store.dispatch(fetchTodos())
 const basePath = import.meta.env.VITE_REPO_NAME;
 
 const router = createBrowserRouter([
-  {
-    path: basePath,
+  { path: '/', element: <Home />,
+  },
+  { path: 'counter-tutorial',
+    element: <Counter />
+  },
+  { path: 'todos-tutorial',
+    element: <Todo />
+  },
+  { path: 'contacts-tutorial',
+    element: <ContactsRoot />,
+    errorElement: <ErrorPage/>,
+    loader: rootLoader,
+    action: rootAction,
     children: [
       {
-        index: true, element: <Home />,
-      },
-      { path: 'counter-tutorial',
-        element: <Counter />
-      },
-      { path: 'todos-tutorial',
-        element: <Todo />
-      },
-      { path: 'contacts-tutorial',
-        element: <ContactsRoot />,
         errorElement: <ErrorPage/>,
-        loader: rootLoader,
-        action: rootAction,
         children: [
           {
-            errorElement: <ErrorPage/>,
-            children: [
-              {
-                index: true, element: <ContactsIndex/>
-              },
-              {
-                path: 'contacts/:contactId',
-                element: <Contact/>,
-                loader: contactLoader,
-                action: contactAction,
-              },
-              {
-                path: 'contacts/:contactId/edit',
-                element: <EditContact/>,
-                loader: contactLoader,
-                action: editAction,
-              },
-              {
-                path: 'contacts/:contactId/destroy',
-                action: destroyAction,
-                errorElement: <div>Oops! There was an error.</div>,
-              }
-            ]
+            index: true, element: <ContactsIndex/>
+          },
+          {
+            path: 'contacts/:contactId',
+            element: <Contact/>,
+            loader: contactLoader,
+            action: contactAction,
+          },
+          {
+            path: 'contacts/:contactId/edit',
+            element: <EditContact/>,
+            loader: contactLoader,
+            action: editAction,
+          },
+          {
+            path: 'contacts/:contactId/destroy',
+            action: destroyAction,
+            errorElement: <div>Oops! There was an error.</div>,
           }
         ]
-      },
+      }
     ]
   },
   { path: '*',
@@ -72,9 +66,11 @@ const router = createBrowserRouter([
   },
   ],
   // Can't redirect to / if the users removed it from window.location
-  // {
-  //   basename: basePath
-  // }
+  // Perhaps / can be a portfolio website on Github Pages, and have a link to 
+  //  this repo when it's completed?
+  {
+    basename: basePath
+  }
 )
 
 function App() {
@@ -93,17 +89,17 @@ function Home(){
       <h1>Welcome to Tutorials Done</h1>
       <p>Click on the links below to explore the results of the tutorials:</p>
       <div>
-        <Link to={basePath + 'counter-tutorial'}>
+        <Link to='counter-tutorial'>
           React-Redux Counter Tutorial
         </Link>
       </div>
       <div>
-        <Link to={basePath + 'todos-tutorial'}>
+        <Link to='todos-tutorial'>
           React-Redux Todos Tutorial
         </Link>
       </div>
       <div>
-        <Link to={basePath + 'contacts-tutorial'}>
+        <Link to='contacts-tutorial'>
           React-Router Contacts Tutorial
         </Link>
       </div>
@@ -117,7 +113,7 @@ function NoMatch() {
     <div id="homepage-root">
       <h2>Nothing to see here.</h2>
       <p>
-        <Link to={basePath}>Go to the home page.</Link>
+        <Link to='/'>Go to the home page.</Link>
       </p>
     </div>
   );
