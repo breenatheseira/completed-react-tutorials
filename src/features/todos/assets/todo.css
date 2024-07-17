@@ -4,6 +4,12 @@
   text-align: center;
   display: block;
 
+  textarea,
+  input,
+  button {
+    box-shadow: none;
+  }
+
   /* Main content */
 
   .button {
