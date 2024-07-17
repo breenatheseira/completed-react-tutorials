@@ -52,7 +52,7 @@ const TodoListItem = ({ id }) => {
             {colorOptions}
           </select>
           <button className="destroy" onClick={handleDeleteClick}>
-            <img src={timesSolid}/>
+            <img src={timesSolid} className='svg' />
           </button>
         </div>
       </div>
