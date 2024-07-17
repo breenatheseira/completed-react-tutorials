@@ -200,6 +200,10 @@
       min-width: inherit;
     }
 
+    .todo-list li .todo-text {
+      font-size: 15px;
+    }
+
     .todo-list li .view {
       flex-direction: column;
       justify-content: flex-start;
