@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom'
 import { useEffect } from 'react'
 import { getContacts, createContact } from '../../features/contacts/contacts.js'
-import '../../features/contacts/contacts.css'
+import '../../features/contacts/assets/contacts.css'
 
 export async function loader({request}) {
   const url = new URL(request.url)
