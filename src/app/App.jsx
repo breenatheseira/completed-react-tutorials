@@ -17,11 +17,15 @@ import ContactsIndex from '../features/contacts/contacts-index.jsx'
 
 store.dispatch(fetchTodos())
 
+const basePath = import.meta.env.VITE_REPO_NAME;
+
 const router = createBrowserRouter([
   {
-    path: import.meta.env.VITE_REPO_NAME,
-    element: <Home />,
+    path: basePath,
     children: [
+      {
+        index: true, element: <Home />,
+      },
       { path: 'counter-tutorial',
         element: <Counter />
       },
@@ -69,7 +73,7 @@ const router = createBrowserRouter([
   ],
   // Can't redirect to / if the users removed it from window.location
   // {
-  //   basename: import.meta.env.VITE_REPO_NAME
+  //   basename: basePath
   // }
 )
 
@@ -89,17 +93,17 @@ function Home(){
       <h1>Welcome to Tutorials Done</h1>
       <p>Click on the links below to explore the results of the tutorials:</p>
       <div>
-        <Link to='/counter-tutorial'>
+        <Link to={basePath + 'counter-tutorial'}>
           React-Redux Counter Tutorial
         </Link>
       </div>
       <div>
-        <Link to='/todos-tutorial'>
+        <Link to={basePath + 'todos-tutorial'}>
           React-Redux Todos Tutorial
         </Link>
       </div>
       <div>
-        <Link to='/contacts-tutorial'>
+        <Link to={basePath + 'contacts-tutorial'}>
           React-Router Contacts Tutorial
         </Link>
       </div>
@@ -108,11 +112,12 @@ function Home(){
 }
 
 function NoMatch() {
+  console.log('homepage: ', basePath)
   return (
     <div id="homepage-root">
-      <h2>Nothing to see here!</h2>
+      <h2>Nothing to see here.</h2>
       <p>
-        <Link to={import.meta.env.VITE_REPO_NAME}>Go to the home page</Link>
+        <Link to={basePath}>Go to the home page.</Link>
       </p>
     </div>
   );
