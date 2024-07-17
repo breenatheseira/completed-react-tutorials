@@ -18,52 +18,60 @@ import ContactsIndex from '../features/contacts/contacts-index.jsx'
 store.dispatch(fetchTodos())
 
 const router = createBrowserRouter([
-  { path: '/',
-    element: <Home />
-  },
-  { path: '/counter-tutorial',
-    element: <Counter />
-  },
-  { path: '/todos-tutorial',
-    element: <Todo />
-  },
-  { path: '/contacts-tutorial',
-    element: <ContactsRoot />,
-    errorElement: <ErrorPage/>,
-    loader: rootLoader,
-    action: rootAction,
+  {
+    path: import.meta.env.VITE_REPO_NAME,
+    element: <Home />,
     children: [
-      {
+      { path: 'counter-tutorial',
+        element: <Counter />
+      },
+      { path: 'todos-tutorial',
+        element: <Todo />
+      },
+      { path: 'contacts-tutorial',
+        element: <ContactsRoot />,
         errorElement: <ErrorPage/>,
+        loader: rootLoader,
+        action: rootAction,
         children: [
           {
-            index: true, element: <ContactsIndex/>
-          },
-          {
-            path: 'contacts/:contactId',
-            element: <Contact/>,
-            loader: contactLoader,
-            action: contactAction,
-          },
-          {
-            path: 'contacts/:contactId/edit',
-            element: <EditContact/>,
-            loader: contactLoader,
-            action: editAction,
-          },
-          {
-            path: 'contacts/:contactId/destroy',
-            action: destroyAction,
-            errorElement: <div>Oops! There was an error.</div>,
+            errorElement: <ErrorPage/>,
+            children: [
+              {
+                index: true, element: <ContactsIndex/>
+              },
+              {
+                path: 'contacts/:contactId',
+                element: <Contact/>,
+                loader: contactLoader,
+                action: contactAction,
+              },
+              {
+                path: 'contacts/:contactId/edit',
+                element: <EditContact/>,
+                loader: contactLoader,
+                action: editAction,
+              },
+              {
+                path: 'contacts/:contactId/destroy',
+                action: destroyAction,
+                errorElement: <div>Oops! There was an error.</div>,
+              }
+            ]
           }
         ]
-      }
+      },
     ]
   },
   { path: '*',
     element: <NoMatch />
-  }
-])
+  },
+  ],
+  // Can't redirect to / if the users removed it from window.location
+  // {
+  //   basename: import.meta.env.VITE_REPO_NAME
+  // }
+)
 
 function App() {
   return (
@@ -104,7 +112,7 @@ function NoMatch() {
     <div id="homepage-root">
       <h2>Nothing to see here!</h2>
       <p>
-        <Link to="/">Go to the home page</Link>
+        <Link to={import.meta.env.VITE_REPO_NAME}>Go to the home page</Link>
       </p>
     </div>
   );
